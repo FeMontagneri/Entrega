@@ -104,10 +104,10 @@ int main (void)
              */
             delay_ms(500);
 			PIOA->PIO_SODR = (1 << PIN_LED_BLUE )|(1 << PIN_LED_GREEN );
-			PIOC->PIO_CODR = (1 << PIN_LED_RED);		
+			PIOC->PIO_SODR = (1 << PIN_LED_RED);		
 			delay_ms(500);	
 			PIOA->PIO_CODR = (1 << PIN_LED_BLUE )|(1 << PIN_LED_GREEN );
-			PIOC->PIO_SODR = (1 << PIN_LED_RED);
+			PIOC->PIO_CODR = (1 << PIN_LED_RED);
 			
 	}
 }
