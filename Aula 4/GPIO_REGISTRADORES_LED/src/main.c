@@ -63,10 +63,12 @@ int main (void)
 	// 1: Enables the corresponding peripheral clock.
 	// ID_PIOA = 11 - TAB 11-1
 	PMC->PMC_PCER0 |= ID_PIOA;
+	PMC->PMC_PCER0 |= ID_PIOC;
 
 	 //31.6.1 PIO Enable Register
 	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).	
 	PIOA->PIO_PER |= (1 << PIN_LED_BLUE )|(1 << PIN_LED_GREEN );
+	PIOC->PIO_PER |= (1 << PIN_LED_RED);
 	
 
 	// 31.6.46 PIO Write Protection Mode Register
@@ -78,6 +80,7 @@ int main (void)
 	//	 	1 : Enables the output on the I/O line.
 	//	 	0 : do nothing
 	PIOA->PIO_OER |=  (1 << PIN_LED_BLUE )|(1 << PIN_LED_GREEN );
+	PIOC->PIO_OER |= (1 << PIN_LED_RED);
 	
 	
     //PIOA->PIO_MDDR |= (1 << PIN_LED_BLUE );
@@ -99,9 +102,11 @@ int main (void)
              * escolhida por você.
              */
             delay_ms(500);
-			PIOA->PIO_SODR = (1 << PIN_LED_BLUE )|(1 << PIN_LED_GREEN );		
+			PIOA->PIO_SODR = (1 << PIN_LED_BLUE )|(1 << PIN_LED_GREEN );
+			PIOC->PIO_SODR = (1 << PIN_LED_RED);		
 			delay_ms(500);	
 			PIOA->PIO_CODR = (1 << PIN_LED_BLUE )|(1 << PIN_LED_GREEN );
+			PIOC->PIO_SODR = (1 << PIN_LED_RED);
 			
 	}
 }
