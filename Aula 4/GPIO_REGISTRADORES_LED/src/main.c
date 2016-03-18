@@ -74,6 +74,7 @@ int main (void)
 	// 31.6.46 PIO Write Protection Mode Register
 	// 0: Disables the write protection if WPKEY corresponds to 0x50494F (PIO in ASCII).
 	PIOA->PIO_WPMR = 0;
+	PIOC->PIO_WPMR = 0;
 	
 	// 31.6.4 PIO Output Enable Register
 	// value =
