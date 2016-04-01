@@ -1,6 +1,5 @@
 
 #include <asf.h>
-
 #include "pio_maua.h"
 
 
@@ -78,20 +77,22 @@ void PIOC_pin_clear(void){
 	
 }
 
-Bool PIOB_GetPinValue(uint8_t pin_b){
+Bool PIOB_GetPinValue(void){
 	
-	if(PIOB->PIO_PDSR && (1 << pin_b)){
+	if((PIOB->PIO_PDSR >> 3) & 1){
 		return true;
-		}else{
+	}else{
 		return false;
 	}
 }
 
 Bool PIOC_GetPinValue(uint8_t pin_c){
 	
-	if(PIOC->PIO_PDSR && (1 << pin_c)){
+	if(PIOC->PIO_PDSR & (1 << pin_c)){
 		return true;
 		}else{
 		return false;
 	}
+	
 }
+

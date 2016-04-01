@@ -47,7 +47,6 @@
 
 int main (void)
 {
-
 	/**
 	* Inicializando o clock do uP
 	*/
@@ -64,24 +63,9 @@ int main (void)
 	/**
 	*	Loop infinito
 	*/
-		while(1){
-
-            /*
-             * Utilize a função delay_ms para fazer o led piscar na frequência
-             * escolhida por você.
-             */
-            //delay_ms();
+		while(1){ 
 			
-			/*
-			delay_ms(500);
-			PIOA_pin_clear();
-			PIOC_pin_set();
-			delay_ms(500);
-			PIOA_pin_set();
-			PIOC_pin_clear();
-			*/
-			
-			if(PIOB_GetPinValue(PIN_BOT_2)){
+			if(PIOB_GetPinValue()){
 				PIOA_pin_set();
 			}else{
 				PIOA_pin_clear();

@@ -1,3 +1,4 @@
+
 #define PIN_LED_BLUE  19
 #define PIN_LED_GREEN 20
 #define PIN_LED_RED   20
@@ -10,5 +11,5 @@ void PIOC_pin_set(void);
 void PIOA_pin_clear(void);
 void PIOC_pin_clear(void);
 
-Bool PIOB_GetPinValue(uint8_t pin_b);
+Bool PIOB_GetPinValue(void);
 Bool PIOC_GetPinValue(uint8_t pin_c);
