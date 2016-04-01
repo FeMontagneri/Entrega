@@ -8,7 +8,7 @@
 */
 
 #include <asf.h>
-#include <pio_maua.h>
+#include "Lib/pio_maua.h"
 
 /*
  * Prototypes
@@ -72,15 +72,26 @@ int main (void)
              */
             //delay_ms();
 			
+			/*
 			delay_ms(500);
 			PIOA_pin_clear();
 			PIOC_pin_set();
 			delay_ms(500);
 			PIOA_pin_set();
 			PIOC_pin_clear();
+			*/
 			
+			if(PIOB_GetPinValue(PIN_BOT_2)){
+				PIOA_pin_set();
+			}else{
+				PIOA_pin_clear();
+			}
 			
-		
+			if(PIOC_GetPinValue(PIN_BOT_3)){
+				PIOC_pin_set();
+				}else{
+				PIOC_pin_clear();
+			}		
 	}
 }
 
