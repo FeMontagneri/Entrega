@@ -42,11 +42,17 @@
 #define MASK_LED_BLUE	(1u << PIN_LED_BLUE)
 
 
+
 /**
  *  Handle Interrupcao botao 1
  */
 static void Button1_Handler(uint32_t id, uint32_t mask)
 {
+	
+	uint16_t aux = tc_read_rc(TC0, 0);
+	
+	tc_write_rc(TC0, 0, 1.1*aux);
+	
 	
 }
 
@@ -55,7 +61,9 @@ static void Button1_Handler(uint32_t id, uint32_t mask)
  */
 static void Button2_Handler(uint32_t id, uint32_t mask)
 {
+	uint16_t aux = tc_read_rc(TC0, 0);
 	
+	tc_write_rc(TC0, 0, 0.9*aux);
 }
 
 /**
@@ -68,7 +76,7 @@ void TC0_Handler(void)
     /****************************************************************
 	* Devemos indicar ao TC que a interrupção foi satisfeita.
     ******************************************************************/
-	//ul_dummy = tc_get_status();
+	ul_dummy = tc_get_status(TC0, 0);
 
 	/* Avoid compiler warning */
 	UNUSED(ul_dummy);
@@ -96,7 +104,44 @@ void TC0_Handler(void)
  */
 static void configure_buttons(void)
 {
-
+	
+	pmc_enable_periph_clk(ID_PIOB);
+	pmc_enable_periph_clk(ID_PIOC);
+	
+	/**
+	* Configura entrada
+	*/ 
+	pio_set_input(PIN_PUSHBUTTON_1_PIO, PIN_PUSHBUTTON_1_MASK, PIN_PUSHBUTTON_1_ATTR);
+	pio_set_input(PIN_PUSHBUTTON_2_PIO, PIN_PUSHBUTTON_2_MASK, PIN_PUSHBUTTON_2_ATTR);
+	
+	/*
+	 * Configura divisor do clock para debounce
+	 */
+	pio_set_debounce_filter(PIN_PUSHBUTTON_1_PIO, PIN_PUSHBUTTON_1_MASK, 100);
+	pio_set_debounce_filter(PIN_PUSHBUTTON_2_PIO, PIN_PUSHBUTTON_2_MASK, 100);
+	
+	/* 
+	*	Configura interrupção para acontecer em borda de descida.
+	*/
+	pio_handler_set(PIOB, PIN_PUSHBUTTON_1_ID, PIN_PUSHBUTTON_1_MASK, PIO_IT_FALL_EDGE, Button1_Handler);
+	pio_handler_set(PIOC, PIN_PUSHBUTTON_2_ID, PIN_PUSHBUTTON_2_MASK, PIO_IT_FALL_EDGE, Button2_Handler);
+				
+	/*
+	*	Ativa interrupção no periférico B porta do botão
+	*/	
+	pio_enable_interrupt(PIN_PUSHBUTTON_1_PIO, PIN_PUSHBUTTON_1_MASK);	
+	pio_enable_interrupt(PIN_PUSHBUTTON_2_PIO, PIN_PUSHBUTTON_2_MASK);	
+	/*
+	*	Configura a prioridade da interrupção no pORTB
+	*/
+	NVIC_SetPriority((IRQn_Type)PIOB_IRQn, 0);
+	NVIC_SetPriority((IRQn_Type)PIOC_IRQn, 0);
+		/*
+	*	Ativa interrupção no port B
+	*/
+	NVIC_EnableIRQ((IRQn_Type)PIOB_IRQn);
+	NVIC_EnableIRQ((IRQn_Type)PIOC_IRQn);
+	
 }
 
 /**
@@ -113,9 +158,6 @@ static void configure_leds(void)
 	pio_set_output(PORT_LED_BLUE  , MASK_LED_BLUE	,1,0,0);
 
 }
-
-
-
 
 /**
  *  Configure Timer Counter 0 to generate an interrupt every 250ms.
@@ -139,7 +181,7 @@ static void configure_tc(void)
     * 
 	*
 	*****************************************************************/
-	pmc_enable_periph_clk(TC0);
+	pmc_enable_periph_clk(ID_TC0);
 
 	/*****************************************************************
 	* Configura TC para operar no modo de comparação e trigger RC
@@ -237,6 +279,7 @@ static void configure_tc(void)
     * Parametros :
     *   1 - ID do periférico
 	*****************************************************************/
+	NVIC_SetPriority(TC0_IRQn,0);
 	NVIC_EnableIRQ(TC0_IRQn);
 
     
@@ -276,6 +319,8 @@ int main(void)
 	while (1) {
 		
 		/* Entra em modo sleep */
+		
+		pmc_sleep(SAM_PM_SMODE_SLEEP_WFI);
 		
 	}
 }
